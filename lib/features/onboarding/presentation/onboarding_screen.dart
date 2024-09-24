@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/rendering.dart';
 
+import '../../authentication/login/presentation/login_screen.dart';
+
 // This resource is taken from AFG Programmer 100 days UI
 
 class OnboardingScreen extends StatefulWidget {
@@ -186,7 +188,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 80, vertical: 10),
                               child: TextButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  Navigator.of(context)
+                                      .push(LoginScreen.route());
+                                },
                                 style: ButtonStyle(
                                   overlayColor: WidgetStateProperty.all(
                                       Colors.transparent), // No ripple effect
