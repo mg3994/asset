@@ -1,19 +1,21 @@
-import 'package:farmer_eats/features/authentication/login/presentation/login_screen.dart';
-import 'package:farmer_eats/features/authentication/reset/presentation/otp_screen.dart';
 import 'package:farmer_eats/features/authentication/reset/presentation/reset_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:pinput/pinput.dart';
 
-class ForgotScreen extends StatefulWidget {
-  const ForgotScreen({super.key});
+import '../../login/presentation/login_screen.dart';
+
+class OTPScreen extends StatefulWidget {
+  const OTPScreen({super.key});
 
   @override
-  State<ForgotScreen> createState() => _ForgotScreenState();
+  State<OTPScreen> createState() => _OTPScreenState();
+
   static route() {
-    return MaterialPageRoute(builder: (context) => const ForgotScreen());
+    return MaterialPageRoute(builder: (context) => const OTPScreen());
   }
 }
 
-class _ForgotScreenState extends State<ForgotScreen> {
+class _OTPScreenState extends State<OTPScreen> {
   /// The button is an [InkWell] that displays a [Row] containing a
   /// [Icon] representing an arrow pointing left and a [Text] widget
   /// displaying the string "Back".
@@ -41,31 +43,36 @@ class _ForgotScreenState extends State<ForgotScreen> {
   //     ),
   //   );
   // }
+  final defaultPinTheme = PinTheme(
+    width: 56,
+    height: 60,
+    textStyle: const TextStyle(
+      fontSize: 22,
+      color: Colors.black,
+    ),
+    decoration: BoxDecoration(
+      color: Color.fromRGBO(238, 237, 236, 1),
+      borderRadius: BorderRadius.circular(8),
+      border: Border.all(color: Colors.transparent),
+    ),
+  );
 
-  Widget _entryField(
-    String hint,
-  ) {
+  Widget _entryField() {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          TextField(
-              decoration: InputDecoration(
-                  hintText: hint,
-                  hintStyle: const TextStyle(color: Colors.grey),
-                  alignLabelWithHint: true,
-                  prefixIcon: Icon(Icons.local_phone_outlined),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide.none,
-                    borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-                  ),
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide.none,
-                    borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-                  ),
-                  fillColor: Color.fromRGBO(238, 237, 236, 1),
-                  filled: true))
+          Pinput(
+            length: 6,
+            defaultPinTheme: defaultPinTheme,
+            focusedPinTheme: defaultPinTheme.copyWith(
+              decoration: defaultPinTheme.decoration!.copyWith(
+                border: Border.all(color: Theme.of(context).primaryColor),
+              ),
+            ),
+            onCompleted: (pin) => debugPrint(pin),
+          ),
         ],
       ),
     );
@@ -77,13 +84,13 @@ class _ForgotScreenState extends State<ForgotScreen> {
       child: MaterialButton(
         minWidth: double.infinity,
         onPressed: () {
-          Navigator.of(context).push(OTPScreen.route());
+          Navigator.of(context).push(ResetScreen.route());
         },
         height: 60,
         color: const Color.fromRGBO(213, 113, 91, 1),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
         child: const Text(
-          'Send Code',
+          'Submit',
           style: TextStyle(fontSize: 20, color: Colors.white),
         ),
       ),
@@ -190,7 +197,11 @@ class _ForgotScreenState extends State<ForgotScreen> {
           ),
           TextButton(
             onPressed: () {
-              Navigator.of(context).maybePop();
+              Navigator.of(context).popUntil((route) {
+                return route.settings.arguments == null &&
+                    route is MaterialPageRoute &&
+                    route.builder(context) is LoginScreen;
+              });
             },
             style: ButtonStyle(
               overlayColor: WidgetStateProperty.all(Colors.transparent),
@@ -257,18 +268,37 @@ class _ForgotScreenState extends State<ForgotScreen> {
           padding: const EdgeInsets.only(top: 80),
           child: RichText(
               text: const TextSpan(
-                  text: 'Forgot Password?',
+                  text: 'Verify OTP',
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30))),
         ),
         //
         _rememberYourPasswordLabel(),
         //
-        _entryField("Phone Number"),
+        _entryField(),
         //
         // _entryField("Password", isPassword: true),
         //
         _submitButton(),
         //
+
+        TextButton(
+          onPressed: () {},
+          style: ButtonStyle(
+            overlayColor:
+                WidgetStateProperty.all(Colors.transparent), // No ripple effect
+            padding: WidgetStateProperty.all(
+                EdgeInsets.zero), // Remove extra padding
+          ),
+          child: const Center(
+            child: Text(
+              "Resend Code",
+              style: TextStyle(
+                color: Colors.black,
+                decoration: TextDecoration.underline,
+              ),
+            ),
+          ),
+        ),
       ],
     )
 
