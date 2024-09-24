@@ -30,7 +30,9 @@ class MyApp extends StatelessWidget {
           //
           // This works for code too, not just values: Most code changes can be
           // tested with just a hot reload.
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          fontFamily: 'BeVietnam',
+          colorScheme: ColorScheme.fromSeed(
+              seedColor: const Color.fromRGBO(213, 113, 91, 1)),
           useMaterial3: true,
         ),
         home: const OnboardingScreen());
